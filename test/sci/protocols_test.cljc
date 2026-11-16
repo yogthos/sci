@@ -468,18 +468,23 @@
 
 ;;;; Host (JVM) protocols implemented from sci: ADR 0013, half 1
 
-#?(:clj (defprotocol HostShape
+#?(:cljd nil
+   :clj (defprotocol HostShape
           (host-area [this])
           (host-scaled [this k] [this k l])))
-#?(:clj (defprotocol HostMarker))
-#?(:clj (defprotocol HostUnused (host-unused [this])))
-#?(:clj (defrecord HostSquare [s]
+#?(:cljd nil
+   :clj (defprotocol HostMarker))
+#?(:cljd nil
+   :clj (defprotocol HostUnused (host-unused [this])))
+#?(:cljd nil
+   :clj (defrecord HostSquare [s]
           HostShape
           (host-area [_] (* s s))
           (host-scaled [_ k] (->HostSquare (* s k)))
           (host-scaled [_ k l] (->HostSquare (* s k l)))))
 
-#?(:clj
+#?(:cljd nil
+   :clj
    (defn- host-ctx []
      (let [hns (sci/create-ns 'host)
            ctx (sci/init {:namespaces {'host {'HostShape (sci/copy-var* #'HostShape hns)
@@ -499,7 +504,8 @@
 (defrecord Plain [x])")
        ctx)))
 
-#?(:clj
+#?(:cljd nil
+   :clj
    (deftest host-protocol-test
      (let [ctx (host-ctx)
            ev #(sci/eval-string* ctx %)]
@@ -559,7 +565,8 @@
            (is (thrown-with-msg? IllegalArgumentException #"No implementation of method: :host-area of protocol: #'sci.protocols-test/HostShape found for class: user.Marked"
                                  (host-area (ev "(->Marked)")))))))))
 
-#?(:clj
+#?(:cljd nil
+   :clj
    (deftest host-protocol-deftype-fn-test
      (testing "a native entry reaches a :deftype-fn constructor as itself"
        (let [seen (atom nil)
@@ -572,7 +579,8 @@
          (is (= 1 (count (:protocols @seen))))
          (is (utils/native-protocol? (first (:protocols @seen))))))))
 
-#?(:clj
+#?(:cljd nil
+   :clj
    (deftest host-protocol-copy-paths-test
      (let [hns (sci/create-ns 'host)]
        (testing "copy-var"
@@ -584,7 +592,8 @@
        (testing "new-var on the raw map stays raw, as before"
          (is (not (utils/native-protocol? @(sci/new-var 'HostShape HostShape {:ns hns}))))))))
 
-#?(:clj
+#?(:cljd nil
+   :clj
    (deftest host-protocol-copy-untouched-test
      (testing "copying a protocol nobody implements leaves the host protocol alone"
        (let [hns (sci/create-ns 'host)]
